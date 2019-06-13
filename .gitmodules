@@ -1,0 +1,9 @@
+[submodule "libs/plog"]
+	path = libs/plog
+	url = https://github.com/SergiusTheBest/plog.git
+[submodule "libs/CRCalc"]
+	path = libs/CRCalc
+	url = https://github.com/DogukanTuna/CRCalc.git
+[submodule "libs/argparse"]
+	path = libs/argparse
+	url = https://github.com/jamolnng/argparse.git
