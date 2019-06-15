@@ -32,3 +32,5 @@ Current task list:
 - [x] Fast upload if the flash has "chip erase" capability (Skip empty regions)
 - [x] Tonnnns of comment
 - [ ] Windows support through nvidia sdk
+
+If you have any question/suggestion or idea, feel free to contact me: [Discord invite link](https://discord.gg/cAWh69C)
