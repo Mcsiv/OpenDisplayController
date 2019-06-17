@@ -52,6 +52,45 @@ void rtd2660::exitISPMode() {
 	PLOG_INFO << "Device exited from ISP mode";
 }
 
+void rtd2660::scalerSendAddress(uint8_t address, bool autoIncrement) {
+	uint8_t reg_value = 0x00;
+
+	// BIT 5 / 0: address auto inc / 1: turn-off address auto inc
+	if (autoIncrement) BIT_CLEAR(reg_value, RTD2660::bf_SCA_INF_CONTROL::addr_non_inc);
+	else BIT_SET(reg_value, RTD2660::bf_SCA_INF_CONTROL::addr_non_inc);
+
+	PLOG_VERBOSE << "Set SCA_INF_CONTROL: " << std::hex << std::setfill('0') << std::setw(2) << (int)reg_value;
+	this->i2cc->write(RTD2660::registers::SCA_INF_CONTROL, reg_value);
+
+	PLOG_VERBOSE << "Set SCA_INF_ADDR: " << std::hex << std::setfill('0') << std::setw(2) << (int)reg_value;
+	this->i2cc->write(RTD2660::registers::SCA_INF_ADDR, address);
+}
+
+void rtd2660::scalerRead(uint8_t address, uint8_t *buffer, size_t size, bool autoIncrement) {
+	this->scalerSendAddress(address, autoIncrement);
+	for (int i = 0; i < size; i++) {
+		buffer[i] = this->i2cc->read(RTD2660::registers::SCA_INF_DATA);
+	}
+}
+
+void rtd2660::scalerWrite(uint8_t address, uint8_t *buffer, size_t size, bool autoIncrement) {
+	this->scalerSendAddress(address, autoIncrement);
+	for (int i = 0; i < size; i++) {
+		this->i2cc->write(RTD2660::registers::SCA_INF_DATA, buffer[i]);
+	}
+}
+
+void rtd2660::scalerSetByte(uint8_t address, uint8_t data) {
+	this->scalerWrite(address, &data, 1, true);
+}
+
+void rtd2660::scalerSetBit(uint8_t address, uint8_t opAnd, uint8_t opOr) {
+	uint8_t data;
+	this->scalerRead(address, &data, 1, true);
+	data = (data & opAnd) | opOr;
+	this->scalerWrite(address, &data, 1, true);
+}
+
 uint8_t rtd2660::calculateCRC(uint32_t startAddress, uint32_t endAddress) {
 	PLOG_DEBUG << "Request CRC checksum from the flash controller";
 

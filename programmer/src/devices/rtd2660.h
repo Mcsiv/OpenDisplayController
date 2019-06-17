@@ -27,7 +27,10 @@ namespace devices {
 			CRC_end_addr0                = 0x72,
 			CRC_end_addr1                = 0x73,
 			CRC_end_addr2                = 0x74,
-			CRC_result                   = 0x75
+			CRC_result                   = 0x75,
+			SCA_INF_CONTROL              = 0xf3,
+			SCA_INF_ADDR                 = 0xf4,
+			SCA_INF_DATA                 = 0xf5
 		};
 
 		// Definitions: bf - bitfields / v - values
@@ -73,6 +76,19 @@ namespace devices {
 			isp_en         = 7		// R/W | 7:7 | 0 | enable ISP program : all registers except this register can’t write/read when ISP_ENABLE=0 | 0: disable / 1: enable (gating 8051 clock)
 		};
 
+		// registers::SCA_INF_CONTROL
+
+		enum bf_SCA_INF_CONTROL {
+			page_addr_map = 0,		// 0: Using normal XFR address to access all XFR 1: Using external page address for XFR. XFR can only be accessed by SCA_INF_ADDR, SCA_INF_DATA
+			dis_int_rls   = 1,		// 1: disable the function of releasing mcu by interrupt
+			burst_cmd_err = 2,		// Burst write command error, value of SCA_INF_BWR_COUNT mismatch the length in content
+			reg_burdat_wr = 3,		// Enable burst write data to HOST_ADDR, mcu will halt till action done or an interrupt triggered *
+			reg_burcmd_we = 4,		// Enable burst write function, mcu will halt till action done or an interrupt triggered.
+			addr_non_inc  = 5,		// 1: turn-off address auto inc
+			reg_write_en  = 6,		// Enable Write Action of Scalar Interface
+			reg_read_en   = 7		// Enable Read Action of Scalar Interface
+		};
+
 	};
 
 	class rtd2660: public device {
@@ -87,6 +103,12 @@ namespace devices {
 			virtual void enterISPMode();
 			virtual bool isInISPMode();
 			virtual void exitISPMode();
+
+			virtual void scalerSendAddress(uint8_t address, bool autoIncrement);
+			virtual void scalerRead(uint8_t address, uint8_t *buffer, size_t size, bool autoIncrement);
+			virtual void scalerWrite(uint8_t address, uint8_t *buffer, size_t size, bool autoIncrement);
+			virtual void scalerSetByte(uint8_t address, uint8_t data);
+			virtual void scalerSetBit(uint8_t address, uint8_t opAnd, uint8_t opOr);
 
 			virtual uint8_t calculateCRC(uint32_t startAddress, uint32_t endAddress);
 
