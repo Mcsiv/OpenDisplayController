@@ -1,6 +1,17 @@
 # OpenDisplayController
 Open source display controller firmware and programmer tool
 
+The firmware itself is not finished and not published yet. 
+
+If you need an opensource rtd2662 firmware, definitely check out KerJoe's work!
+- [KerJoe/ORTD2662-Junk](https://github.com/KerJoe/ORTD2662-Junk)
+
+Another great project from Anton (with an external avr mcu)
+- [specadmin/RTD2660AVR](https://github.com/specadmin/RTD2660AVR)
+
+A good RTD2662 related collection 
+- [gamelaster/RTD2662](https://github.com/gamelaster/RTD2662)
+
 ## Firmware 
 Only draft and garbage, nothing uploaded yet
 
